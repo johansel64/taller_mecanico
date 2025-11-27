@@ -6,7 +6,6 @@ export const useProductos = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Cargar productos iniciales
 // Cargar productos iniciales
 const cargarProductos = async () => {
   try {
