@@ -101,10 +101,8 @@ const TallerMecanicoApp = () => {
 
 const realizarVenta = async (productoId, cantidad = 1) => {
   try {
-    console.log("Iniciando venta:", { productoId, cantidad }); // Debug
 
     const resultado = await realizarVentaService(productoId, cantidad);
-    console.log("Resultado de venta:", resultado); // Debug
 
     // Verificar si la venta fue exitosa
     if (resultado && resultado.success && resultado.data) {
@@ -139,7 +137,6 @@ const realizarVenta = async (productoId, cantidad = 1) => {
 
   // Función legacy para compatibilidad con componentes que aún la usan
   const mostrarNotificacion = async (mensaje, tipo, productoNombre = null) => {
-    console.log("Creando notificación:", { mensaje, tipo, productoNombre }); // Debug
     await crearNotificacion(mensaje, tipo, productoNombre);
   };
 

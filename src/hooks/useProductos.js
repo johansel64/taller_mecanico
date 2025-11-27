@@ -9,16 +9,13 @@ export const useProductos = () => {
 // Cargar productos iniciales
 const cargarProductos = async () => {
   try {
-    console.log("🔄 [useProductos] Iniciando carga de productos..."); // Debug
     setLoading(true);
     setError(null);
     const data = await productosService.obtenerProductos();
-    console.log("✅ [useProductos] Productos obtenidos:", data.length); // Debug
     
     // ✅ CRÍTICO: Crear nuevo array para forzar re-render
     setProductos([...data]); // Spread operator crea nueva referencia
     
-    console.log("✅ [useProductos] Estado actualizado con productos"); // Debug
   } catch (error) {
     console.error("❌ [useProductos] Error cargando productos:", error);
     setError(error.message);

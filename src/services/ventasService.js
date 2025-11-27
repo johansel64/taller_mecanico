@@ -21,7 +21,6 @@ export const ventasService = {
 
 async realizarVenta(productoId, cantidad = 1) {
   try {
-    console.log('Realizando venta:', { productoId, cantidad }); // Debug
 
     // Obtener producto actual
     const { data: producto, error: errorProducto } = await supabase
@@ -30,7 +29,6 @@ async realizarVenta(productoId, cantidad = 1) {
       .eq('id', productoId)
       .single();
 
-    console.log('Producto encontrado:', producto); // Debug
 
     if (errorProducto) {
       console.error('Error obteniendo producto:', errorProducto);
@@ -50,7 +48,6 @@ async realizarVenta(productoId, cantidad = 1) {
     const precioUnitario = parseFloat(producto.precio);
     const total = precioUnitario * cantidad;
 
-    console.log('Cálculos:', { nuevoStock, precioUnitario, total }); // Debug
 
     // Crear venta
     const { data: venta, error: errorVenta } = await supabase
@@ -66,7 +63,6 @@ async realizarVenta(productoId, cantidad = 1) {
       .select()
       .single();
 
-    console.log('Venta creada:', venta); // Debug
 
     if (errorVenta) {
       console.error('Error creando venta:', errorVenta);
@@ -86,7 +82,6 @@ async realizarVenta(productoId, cantidad = 1) {
       throw errorStock;
     }
 
-    console.log('Venta completada exitosamente'); // Debug
 
     // Devolver el producto actualizado con el nuevo stock
     const productoActualizado = { 

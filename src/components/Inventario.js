@@ -234,12 +234,9 @@ const handleRealizarVentaConCantidad = async () => {
 
   setLoadingAction(true);
   try {
-    console.log("Llamando realizarVenta con:", productoParaVender.id, cantidadVenta); // Debug
     
     const resultado = await realizarVenta(productoParaVender.id, cantidadVenta);
-    
-    console.log("Resultado recibido:", resultado); // Debug
-    
+        
     if (resultado && resultado.success) {
       const total = productoParaVender.precio * cantidadVenta;
       
@@ -253,8 +250,7 @@ const handleRealizarVentaConCantidad = async () => {
       // La recarga ya se hizo en App.js pero podemos forzar una adicional
       // para estar seguros
       if (recargarProductos) {
-        console.log("Recargando productos desde Inventario..."); // Debug
-        await recargarProductos();
+        await cargarProductos()
       }
     } else {
       mostrarNotificacion(resultado?.error || 'Error al realizar la venta', 'error');
