@@ -1,0 +1,320 @@
+/* ========================================
+   ESTILOS ADICIONALES PARA MEJORAS
+   ======================================== */
+
+/* Indicador de búsqueda con debounce */
+.search-indicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-style: italic;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Contenedor para datalist con autocompletado */
+.input-with-datalist {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-datalist input {
+  width: 100%;
+}
+
+/* Estilos para código de barras */
+.codigo-barras-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  width: 100%;
+}
+
+.codigo-barras-container .input {
+  flex: 1;
+}
+
+.codigo-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.btn-icon {
+  padding: 0.5rem;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover:not(:disabled) {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.btn-icon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mejoras visuales para formularios */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-grid input[required],
+.form-grid input[required] + label::after {
+  border-color: #3b82f6;
+}
+
+.form-grid textarea {
+  grid-column: 1 / -1;
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Indicador de campo requerido */
+.input[required] {
+  border-left: 3px solid #3b82f6;
+}
+
+/* Estilos para validación */
+.input.error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.input.success {
+  border-color: #10b981;
+  background-color: #f0fdf4;
+}
+
+.validation-message {
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.validation-message.success {
+  color: #10b981;
+}
+
+/* Mejor visualización de productos con código de barras */
+.producto-codigo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #374151;
+}
+
+/* Estados de carga mejorados */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: #6b7280;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f4f6;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estado vacío mejorado */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6b7280;
+}
+
+.empty-state svg {
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+.empty-search {
+  margin-top: 0.5rem;
+  font-style: italic;
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* Mejoras en botones */
+.btn-success {
+  background-color: #10b981;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.btn-success:disabled,
+.btn-success.disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Alertas mejoradas */
+.alert-box {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border-left: 4px solid;
+}
+
+.alert-box.info {
+  background-color: #eff6ff;
+  border-color: #3b82f6;
+  color: #1e40af;
+}
+
+.alert-box.warning {
+  background-color: #fffbeb;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.alert-box.error {
+  background-color: #fef2f2;
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+.alert-box.success {
+  background-color: #f0fdf4;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.alert-box h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.alert-box p {
+  margin: 0.25rem 0;
+}
+
+/* Mejoras responsive */
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .codigo-barras-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .codigo-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-icon {
+    flex: 1;
+  }
+}
+
+/* Animaciones de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card,
+.producto-card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Mejora visual para stock bajo */
+.stock-bajo {
+  color: #dc2626;
+  font-weight: 600;
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Mejoras para accesibilidad */
+.input:focus,
+.btn-primary:focus,
+.btn-secondary:focus,
+.btn-success:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Transiciones suaves */
+* {
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+button {
+  transition: all 0.2s;
+}

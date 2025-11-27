@@ -19,92 +19,100 @@ export const ventasService = {
     }
   },
 
-  // Realizar una venta (transacción completa)
-  async realizarVenta(productoId, cantidad = 1) {
-    try {
-      console.log('Realizando venta:', { productoId, cantidad }); // Debug
+async realizarVenta(productoId, cantidad = 1) {
+  try {
+    console.log('Realizando venta:', { productoId, cantidad }); // Debug
 
-      // Obtener producto actual
-      const { data: producto, error: errorProducto } = await supabase
-        .from('productos')
-        .select('*')
-        .eq('id', productoId)
-        .single();
+    // Obtener producto actual
+    const { data: producto, error: errorProducto } = await supabase
+      .from('productos')
+      .select('*')
+      .eq('id', productoId)
+      .single();
 
-      console.log('Producto encontrado:', producto); // Debug
+    console.log('Producto encontrado:', producto); // Debug
 
-      if (errorProducto) {
-        console.error('Error obteniendo producto:', errorProducto);
-        throw errorProducto;
-      }
-      
-      if (!producto) {
-        throw new Error('Producto no encontrado');
-      }
-
-      if (producto.stock < cantidad) {
-        throw new Error(`Stock insuficiente. Disponible: ${producto.stock}, Solicitado: ${cantidad}`);
-      }
-
-      // Calcular nuevo stock y total
-      const nuevoStock = producto.stock - cantidad;
-      const precioUnitario = parseFloat(producto.precio);
-      const total = precioUnitario * cantidad;
-
-      console.log('Cálculos:', { nuevoStock, precioUnitario, total }); // Debug
-
-      // Crear venta
-      const { data: venta, error: errorVenta } = await supabase
-        .from('ventas')
-        .insert({
-          producto_id: productoId,
-          nombre_producto: producto.nombre,
-          cantidad: cantidad,
-          precio_unitario: precioUnitario,
-          total: total,
-          fecha: new Date().toISOString()
-        })
-        .select()
-        .single();
-
-      console.log('Venta creada:', venta); // Debug
-
-      if (errorVenta) {
-        console.error('Error creando venta:', errorVenta);
-        throw errorVenta;
-      }
-
-      // Actualizar stock del producto
-      const { error: errorStock } = await supabase
-        .from('productos')
-        .update({ stock: nuevoStock })
-        .eq('id', productoId);
-
-      if (errorStock) {
-        console.error('Error actualizando stock:', errorStock);
-        // Si falla actualizar stock, intentar revertir la venta
-        await supabase.from('ventas').delete().eq('id', venta.id);
-        throw errorStock;
-      }
-
-      console.log('Venta completada exitosamente'); // Debug
-
-      // Devolver el producto actualizado con el nuevo stock
-      const productoActualizado = { 
-        ...producto, 
-        stock: nuevoStock 
-      };
-
-      return {
-        venta,
-        productoActualizado
-      };
-
-    } catch (error) {
-      console.error('Error realizando venta:', error);
-      throw error;
+    if (errorProducto) {
+      console.error('Error obteniendo producto:', errorProducto);
+      throw errorProducto;
     }
-  },
+    
+    if (!producto) {
+      throw new Error('Producto no encontrado');
+    }
+
+    if (producto.stock < cantidad) {
+      throw new Error(`Stock insuficiente. Disponible: ${producto.stock}, Solicitado: ${cantidad}`);
+    }
+
+    // Calcular nuevo stock y total
+    const nuevoStock = producto.stock - cantidad;
+    const precioUnitario = parseFloat(producto.precio);
+    const total = precioUnitario * cantidad;
+
+    console.log('Cálculos:', { nuevoStock, precioUnitario, total }); // Debug
+
+    // Crear venta
+    const { data: venta, error: errorVenta } = await supabase
+      .from('ventas')
+      .insert({
+        producto_id: productoId,
+        nombre_producto: producto.nombre,
+        cantidad: cantidad,
+        precio_unitario: precioUnitario,
+        total: total,
+        fecha: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    console.log('Venta creada:', venta); // Debug
+
+    if (errorVenta) {
+      console.error('Error creando venta:', errorVenta);
+      throw errorVenta;
+    }
+
+    // Actualizar stock del producto
+    const { error: errorStock } = await supabase
+      .from('productos')
+      .update({ stock: nuevoStock })
+      .eq('id', productoId);
+
+    if (errorStock) {
+      console.error('Error actualizando stock:', errorStock);
+      // Si falla actualizar stock, intentar revertir la venta
+      await supabase.from('ventas').delete().eq('id', venta.id);
+      throw errorStock;
+    }
+
+    console.log('Venta completada exitosamente'); // Debug
+
+    // Devolver el producto actualizado con el nuevo stock
+    const productoActualizado = { 
+      ...producto, 
+      stock: nuevoStock 
+    };
+
+    return {
+      success: true,
+      data: venta,
+      venta: venta,
+      productoActualizado
+    };
+
+  } catch (error) {
+    console.error('Error realizando venta:', error);
+    // ✅ Retornar error en lugar de hacer throw
+    return {
+      success: false,
+      error: error.message || 'Error desconocido al realizar venta',
+      data: null,
+      venta: null,
+      productoActualizado: null
+    };
+  }
+},
 
   // Obtener ventas por rango de fechas
   async obtenerVentasPorFecha(fechaInicio, fechaFin) {

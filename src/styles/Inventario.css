@@ -480,3 +480,6 @@
       flex-direction: column;
     }
   }
+
+/* Importar estilos profesionales de inventario */
+@import './inventario-profesional.css';

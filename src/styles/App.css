@@ -1044,3 +1044,6 @@ body {
 .search-container:hover::after {
   opacity: 1;
 }
+
+/* Mejoras adicionales */
+@import './mejoras_adicionales.css';
