@@ -3,13 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@capacitor-community/barcode-scanner": "^4.0.1",
+    "@capacitor/android": "5.7.8",
+    "@capacitor/core": "5.7.8",
+    "@react-native-picker/picker": "^2.11.1",
+    "@supabase/supabase-js": "^2.52.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "@zxing/library": "^0.21.3",
+    "expo-barcode-scanner": "^13.0.1",
+    "expo-camera": "^16.1.11",
+    "lucide-react": "^0.525.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-native-vector-icons": "^10.3.0",
+    "react-native-vision-camera": "^4.7.1",
     "react-scripts": "5.0.1",
+    "vision-camera-code-scanner": "^0.2.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -35,5 +47,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@capacitor/cli": "5.7.8",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11"
   }
 }

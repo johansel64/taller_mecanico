@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "name": "Sistema Taller Piolin",
+  "short_name": "Taller Piolin",
+  "description": "Sistema de inventario y ventas para taller",
   "icons": [
     {
       "src": "favicon.ico",

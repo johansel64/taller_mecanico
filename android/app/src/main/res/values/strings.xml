@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sistema Taller Piolin</string>
+    <string name="title_activity_main">Sistema Taller Piolin</string>
+    <string name="package_name">com.taller.app</string>
+    <string name="custom_url_scheme">com.taller.app</string>
+</resources>
