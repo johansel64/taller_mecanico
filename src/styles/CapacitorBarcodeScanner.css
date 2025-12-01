@@ -1,28 +1,28 @@
-  /* ========================================
-    FIX CRÍTICO: Ocultar contenido cuando scanner está activo
-    ======================================== */
+/* components/CapacitorBarcodeScanner.css */
 
-  /* Ocultar TODO excepto el scanner */
+/* Clase global para hacer transparente el fondo cuando se escanea */
   body.scanner-active {
     background: transparent !important;
-    overflow: hidden !important;
+    overflow: hidden;
   }
 
-  /* Ocultar la aplicación completa */
   body.scanner-active .app,
-  body.scanner-active .App,
-  body.scanner-active #root > *:not(.scanner-overlay-native) {
+  body.scanner-active .App {
     display: none !important;
   }
 
-  /* Overlay del scanner - MÁXIMA PRIORIDAD */
+  body.scanner-active > *:not(.scanner-overlay-native) {
+    display: none !important;
+  }
+  
+  /* Overlay para scanner nativo activo */
   .scanner-overlay-native {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    z-index: 999999 !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99999 !important;
     display: flex;
     flex-direction: column;
     background: transparent;

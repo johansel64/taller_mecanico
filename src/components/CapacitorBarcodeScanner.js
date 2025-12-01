@@ -25,25 +25,13 @@ const CapacitorBarcodeScanner = ({
       }
     }
 
-    // Cleanup al cerrar - IMPORTANTE
+    // Cleanup al cerrar
     return () => {
       if (isScanning) {
         stopScanning();
       }
-      // Asegurar que se restaure la visibilidad al desmontar
-      document.body.classList.remove('scanner-active');
-      const appElements = [
-        document.querySelector('.app'),
-        document.querySelector('.App'),
-        document.getElementById('root')?.firstChild
-      ];
-      appElements.forEach(el => {
-        if (el) {
-          el.style.display = '';
-        }
-      });
     };
-  }, [isOpen, isScanning]);
+  }, [isOpen]);
 
   const initializeScanner = async () => {
     try {
@@ -74,24 +62,17 @@ const CapacitorBarcodeScanner = ({
       setIsScanning(true);
       setError('');
       
-      // Agregar clase al body
+      // Hacer transparente el fondo para que se vea la cámara
       document.body.classList.add('scanner-active');
-      
-      // CRÍTICO: Forzar el ocultamiento de la app
-      const appElements = [
-        document.querySelector('.app'),
-        document.querySelector('.App'),
-        document.getElementById('root')?.firstChild
-      ];
-      
-      appElements.forEach(el => {
-        if (el && !el.classList.contains('scanner-overlay-native')) {
-          el.style.display = 'none';
-        }
-      });
       
       // Iniciar el escáner
       const result = await BarcodeScanner.startScan();
+
+      // IMPORTANTE: Esconder todos los elementos excepto el scanner
+      const appElement = document.querySelector('.app') || document.querySelector('.App');
+      if (appElement) {
+        appElement.style.display = 'none';
+      }
       
       // Procesar resultado
       if (result && result.hasContent) {
@@ -115,22 +96,11 @@ const CapacitorBarcodeScanner = ({
       if (isScanning) {
         setIsScanning(false);
         await BarcodeScanner.stopScan();
-        
-        // Remover clase del body
         document.body.classList.remove('scanner-active');
-        
-        // CRÍTICO: Restaurar visibilidad de la app
-        const appElements = [
-          document.querySelector('.app'),
-          document.querySelector('.App'),
-          document.getElementById('root')?.firstChild
-        ];
-        
-        appElements.forEach(el => {
-          if (el) {
-            el.style.display = '';
-          }
-        });
+        const appElement = document.querySelector('.app') || document.querySelector('.App');
+        if (appElement) {
+          appElement.style.display = '';
+        }
       }
     } catch (error) {
       console.error('Error deteniendo escáner:', error);
