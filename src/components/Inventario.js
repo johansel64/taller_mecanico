@@ -560,33 +560,37 @@ const handleRealizarVentaConCantidad = async () => {
             <div className="form-group form-group-full">
               <label>Código de barras</label>
               <div className="codigo-barras-container-pro">
-                <input
-                  type="text"
-                  placeholder="8-18 dígitos (opcional)"
-                  value={nuevoProducto.codigo_barras}
-                  onChange={(e) => setNuevoProducto({...nuevoProducto, codigo_barras: e.target.value})}
-                  className="input-pro"
-                  disabled={loadingAction}
-                  pattern="\d{8,18}"
-                />
-                <button
-                  type="button"
-                  onClick={() => abrirScanner('agregar')}
-                  className="btn-secondary-icon"
-                  disabled={loadingAction}
-                  title="Escanear código"
-                >
-                  <Scan size={18} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleGenerarCodigo('nuevo')}
-                  className="btn-secondary-icon"
-                  disabled={loadingAction}
-                  title="Generar código"
-                >
-                  <Barcode size={18} />
-                </button>
+                <div className='codigo'>
+                  <input
+                    type="text"
+                    placeholder="8-18 dígitos (opcional)"
+                    value={nuevoProducto.codigo_barras}
+                    onChange={(e) => setNuevoProducto({...nuevoProducto, codigo_barras: e.target.value})}
+                    className="input-pro"
+                    disabled={loadingAction}
+                    pattern="\d{8,18}"
+                  />
+                </div>
+                <div className='opciones'>
+                  <button
+                    type="button"
+                    onClick={() => abrirScanner('agregar')}
+                    className="btn-secondary-icon"
+                    disabled={loadingAction}
+                    title="Escanear código"
+                  >
+                    <Scan size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleGenerarCodigo('nuevo')}
+                    className="btn-secondary-icon"
+                    disabled={loadingAction}
+                    title="Generar código"
+                  >
+                    <Barcode size={18} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>

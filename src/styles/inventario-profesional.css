@@ -2,6 +2,13 @@
    ESTILOS PROFESIONALES PARA INVENTARIO
    ======================================== */
 
+/* FIX CRÍTICO PARA MÓVIL */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .inventario-container {
   padding: 1rem;
   max-width: 1400px;
@@ -111,9 +118,10 @@
   padding: 0.875rem 3rem 0.875rem 3rem;
   border: 2px solid #e2e8f0;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 16px; /* Fix iOS zoom */
   transition: all 0.2s;
   background: white;
+  box-sizing: border-box;
 }
 
 .search-input-pro:focus {
@@ -224,12 +232,14 @@
 }
 
 .input-pro {
+  width: 100%;
   padding: 0.75rem;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
-  font-size: 0.875rem;
+  font-size: 16px; /* Fix iOS zoom */
   transition: all 0.2s;
   background: white;
+  box-sizing: border-box;
 }
 
 .input-pro:focus {
@@ -270,6 +280,8 @@
   justify-content: center;
   color: #64748b;
   transition: all 0.2s;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .btn-secondary-icon:hover:not(:disabled) {
@@ -797,6 +809,7 @@
   border: 2px solid #e2e8f0;
   border-radius: 10px;
   color: #1e293b;
+  box-sizing: border-box;
 }
 
 .input-cantidad:focus {
@@ -952,6 +965,16 @@
   }
 
   .modal-actions button {
+    width: 100%;
+  }
+  
+  /* Fix específico para formularios en móvil */
+  .codigo-barras-container-pro {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .btn-secondary-icon {
     width: 100%;
   }
 }
