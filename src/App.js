@@ -54,6 +54,9 @@ const TallerMecanicoApp = () => {
     marcarComoLeida,
     marcarTodasComoLeidas,
     filtrarPorTipo,
+    eliminarNotificacion,
+    eliminarTodas, 
+    eliminarLeidas 
   } = useNotificaciones();
 
   // Verificar stock bajo al cargar productos
@@ -508,6 +511,9 @@ const realizarVenta = async (productoId, cantidad = 1) => {
             marcarComoLeida={marcarComoLeida}
             marcarTodasComoLeidas={marcarTodasComoLeidas}
             filtrarPorTipo={filtrarPorTipo}
+            eliminarNotificacion={eliminarNotificacion}     
+            eliminarTodas={eliminarTodas}                   
+            eliminarLeidas={eliminarLeidas}                 
             mostrarNotificacion={mostrarNotificacion}
           />
         );

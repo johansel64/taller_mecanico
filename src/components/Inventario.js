@@ -865,7 +865,7 @@ const handleRealizarVentaConCantidad = async () => {
                         setDatosEdicion({
                           nombre: producto.nombre,
                           tipo: producto.tipo || '',
-                          marca: producto.marca || '',
+                          marca: producto.marcaInfo?.nombre || '',
                           descripcion: producto.descripcion || '',
                           precio: producto.precio,
                           stock: producto.stock,

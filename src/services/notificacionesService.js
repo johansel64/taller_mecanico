@@ -141,5 +141,55 @@ export const notificacionesService = {
       .subscribe();
 
     return subscription;
+  },
+
+  // Eliminar notificación específica
+async eliminarNotificacion(id) {
+  try {
+    const { error } = await supabase
+      .from('notificaciones')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    return { success: true };
+  } catch (error) {
+    console.error('Error eliminando notificación:', error);
+    throw error;
   }
+},
+
+// Eliminar todas las notificaciones
+async eliminarTodas() {
+  try {
+    const { error } = await supabase
+      .from('notificaciones')
+      .delete()
+      .neq('id', '00000000-0000-0000-0000-000000000000'); // Eliminar todas
+
+    if (error) throw error;
+    return { success: true };
+  } catch (error) {
+    console.error('Error eliminando todas las notificaciones:', error);
+    throw error;
+  }
+},
+
+// Eliminar solo las leídas
+async eliminarLeidas() {
+  try {
+    const { error } = await supabase
+      .from('notificaciones')
+      .delete()
+      .eq('leida', true);
+
+    if (error) throw error;
+    return { success: true };
+  } catch (error) {
+    console.error('Error eliminando notificaciones leídas:', error);
+    throw error;
+  }
+},
+
+  
 };

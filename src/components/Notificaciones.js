@@ -1,57 +1,54 @@
 import React, { useState } from 'react';
-import { AlertTriangle, Filter, Copy, List, TrendingDown } from 'lucide-react';
+import { 
+  AlertTriangle, 
+  Filter, 
+  Copy, 
+  List, 
+  TrendingDown, 
+  Trash2, 
+  CheckCircle,
+  XCircle,
+  Bell,
+  BellOff,
+  Check  
+} from 'lucide-react';
+import '../styles/Notificaciones.css';
 
-const Notificaciones = ({ productos, ventas, notificaciones, formatearPrecio, mostrarNotificacion }) => {
+const Notificaciones = ({ 
+  productos, 
+  ventas, 
+  notificaciones,
+  formatearPrecio,
+  marcarComoLeida,
+  marcarTodasComoLeidas,
+  eliminarNotificacion,
+  eliminarTodas,
+  eliminarLeidas,
+  mostrarNotificacion
+}) => {
   const [filtroAlertas, setFiltroAlertas] = useState('todas');
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+  const [tipoConfirmacion, setTipoConfirmacion] = useState('');
 
-  // Función para formatear fechas de forma segura
-  const formatearFechaSafe = (notificacion) => {
-    // El campo de fecha en la base de datos se llama 'created_at'
-    const timestamp = notificacion;
-    
-    if (!timestamp) {
-        return 'Fecha no disponible';
+  const formatearFechaSafe = (timestamp) => {
+    try {
+      const fecha = new Date(timestamp);
+      if (isNaN(fecha.getTime())) {
+        return 'Fecha inválida';
       }
-      
-      try {
-        let fecha;
-        
-        // Si el timestamp es una cadena en formato PostgreSQL (2025-07-22 14:08:41.987621+00)
-        if (typeof timestamp === 'string') {
-          // Convertir el formato de PostgreSQL a ISO estándar
-          let timestampISO = timestamp;
-          
-          // Si termina en +00, reemplazar con Z para formato ISO
-          if (timestamp.endsWith('+00')) {
-            timestampISO = timestamp.slice(0, -3) + 'Z';
-          }
-          
-          // Crear la fecha
-          fecha = new Date(timestampISO);
-        } else {
-          fecha = new Date(timestamp);
-        }
-        
-        // Verificar si la fecha es válida
-        if (isNaN(fecha.getTime())) {
-          console.warn('Fecha inválida:', timestamp);
-          return 'Fecha inválida';
-        }
-        
-        // Formatear la fecha para Costa Rica
-        return fecha.toLocaleString('es-CR', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'America/Costa_Rica' // Ajustar a zona horaria de Costa Rica
-        });
-      } catch (error) {
-        console.error('Error al formatear fecha:', timestamp, error);
-        return 'Error en fecha';
-      }
-    };
+      return fecha.toLocaleString('es-CR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'America/Costa_Rica'
+      });
+    } catch (error) {
+      console.error('Error al formatear fecha:', timestamp, error);
+      return 'Error en fecha';
+    }
+  };
 
   const notificacionesFiltradas = notificaciones.filter(notif => {
     if (filtroAlertas === 'todas') return true;
@@ -60,11 +57,6 @@ const Notificaciones = ({ productos, ventas, notificaciones, formatearPrecio, mo
     if (filtroAlertas === 'errores') return notif.tipo === 'error';
     return true;
   });
-
-  console.log('Notificaciones disponibles:', notificaciones);
-  console.log('Filtro actual:', filtroAlertas);
-  console.log('Notificaciones filtradas:', notificacionesFiltradas);
-  console.log('Tipos de notificaciones encontrados:', [...new Set(notificaciones.map(n => n.tipo))]);
 
   const generarListaStockBajo = () => {
     const productosStockCritico = productos.filter(p => {
@@ -158,9 +150,75 @@ const Notificaciones = ({ productos, ventas, notificaciones, formatearPrecio, mo
     });
   };
 
+  const handleEliminarNotificacion = async (id) => {
+    await eliminarNotificacion(id);
+  };
+
+  const handleMarcarComoLeida = async (id) => {
+    await marcarComoLeida(id);
+  };
+
+  const handleMarcarTodasLeidas = async () => {
+    await marcarTodasComoLeidas();
+  };
+
+  const abrirConfirmacion = (tipo) => {
+    setTipoConfirmacion(tipo);
+    setMostrarConfirmacion(true);
+  };
+
+  const cerrarConfirmacion = () => {
+    setMostrarConfirmacion(false);
+    setTipoConfirmacion('');
+  };
+
+  const confirmarEliminacion = async () => {
+    let resultado;
+    
+    if (tipoConfirmacion === 'todas') {
+      resultado = await eliminarTodas();
+      // if (resultado.success) {
+      //   mostrarNotificacion('Todas las notificaciones eliminadas', 'success');
+      // }
+    } else if (tipoConfirmacion === 'leidas') {
+      resultado = await eliminarLeidas();
+      // if (resultado.success) {
+      //   mostrarNotificacion('Notificaciones leídas eliminadas', 'success');
+      // }
+    }
+    
+    // if (!resultado.success) {
+    //   mostrarNotificacion('Error al eliminar notificaciones', 'error');
+    // }
+    
+    cerrarConfirmacion();
+  };
+
+  const getTituloConfirmacion = () => {
+    if (tipoConfirmacion === 'todas') return '¿Eliminar TODAS las notificaciones?';
+    if (tipoConfirmacion === 'leidas') return '¿Eliminar notificaciones leídas?';
+    return '';
+  };
+
+  const getMensajeConfirmacion = () => {
+    if (tipoConfirmacion === 'todas') {
+      return `Se eliminarán ${notificaciones.length} notificaciones permanentemente.`;
+    }
+    if (tipoConfirmacion === 'leidas') {
+      const leidas = notificaciones.filter(n => n.leida).length;
+      return `Se eliminarán ${leidas} notificaciones leídas permanentemente.`;
+    }
+    return '';
+  };
+
   return (
-    <div>
-      <h2>Alertas y Listas</h2>
+    <div className="notificaciones-container">
+      <div className="notificaciones-header">
+        <h2>
+          <Bell size={24} />
+          Alertas y Listas
+        </h2>
+      </div>
       
       {/* Filtros */}
       <div className="card">
@@ -252,7 +310,7 @@ const Notificaciones = ({ productos, ventas, notificaciones, formatearPrecio, mo
           </div>
           <button
             onClick={() => copiarLista(generarListaStockBajo(), 'stock')}
-            className="btn-danger copy-button"
+            className="btn-copy danger"
           >
             <Copy size={16} />
             Copiar Lista de Pedidos
@@ -273,22 +331,17 @@ const Notificaciones = ({ productos, ventas, notificaciones, formatearPrecio, mo
                   {vendidos.length > 0 ? (
                     <div className="alert-box success">
                       {vendidos.slice(0, 5).map((item, index) => (
-                        <div key={index} style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          fontSize: '0.875rem'
-                        }}>
+                        <div key={index} className="vendido-item">
                           <span className="alert-item success">
                             {index + 1}. {item.nombre}
                           </span>
-                          <span style={{color: '#16a34a', fontWeight: 600}}>
+                          <span className="vendido-cantidad">
                             {item.cantidad}x
                           </span>
                         </div>
                       ))}
                       {vendidos.length > 5 && (
-                        <p className="alert-more" style={{color: '#16a34a', marginTop: '0.5rem'}}>
+                        <p className="alert-more success">
                           ... y {vendidos.length - 5} productos más
                         </p>
                       )}
@@ -304,7 +357,7 @@ const Notificaciones = ({ productos, ventas, notificaciones, formatearPrecio, mo
           </div>
           <button
             onClick={() => copiarLista(generarListaVendidos(), 'vendidos')}
-            className="btn-success copy-button"
+            className="btn-copy success"
           >
             <Copy size={16} />
             Copiar Lista de Vendidos
@@ -313,19 +366,50 @@ const Notificaciones = ({ productos, ventas, notificaciones, formatearPrecio, mo
       </div>
 
       {/* Historial de Notificaciones */}
-      <div className="card">
-        <h3>
-          Historial de Notificaciones 
-          {filtroAlertas !== 'todas' && (
-            <span style={{fontSize: '0.875rem', fontWeight: 'normal', color: '#6b7280'}}>
-              ({notificacionesFiltradas.length} filtradas)
-            </span>
-          )}
-        </h3>
+      <div className="card notificaciones-card">
+        <div className="notificaciones-card-header">
+          <h3>
+            Historial de Notificaciones 
+            {filtroAlertas !== 'todas' && (
+              <span className="count-badge">
+                {notificacionesFiltradas.length}
+              </span>
+            )}
+          </h3>
+          
+        {notificaciones.length > 0 && (
+        <div className="header-actions">
+          <button
+            onClick={handleMarcarTodasLeidas}
+            className="btn-action marcar"
+            title="Marcar todas como leídas"
+          >
+            <Check size={18} />
+            Marcar Leídas
+          </button>
+          <button
+            onClick={() => abrirConfirmacion('leidas')}
+            className="btn-action limpiar"
+            title="Eliminar leídas"
+          >
+            <CheckCircle size={18} />
+            Limpiar Leídas
+          </button>
+          <button
+            onClick={() => abrirConfirmacion('todas')}
+            className="btn-action eliminar"
+            title="Eliminar todas"
+          >
+            <Trash2 size={18} />
+            Eliminar Todas
+          </button>
+        </div>
+      )}
+        </div>
         
         {notificacionesFiltradas.length === 0 ? (
           <div className="empty-state">
-            <AlertTriangle size={48} />
+            <BellOff size={48} />
             <p>
               {filtroAlertas === 'todas' 
                 ? 'No hay notificaciones' 
@@ -334,46 +418,65 @@ const Notificaciones = ({ productos, ventas, notificaciones, formatearPrecio, mo
             </p>
           </div>
         ) : (
-          <div className="scrollable">
+          <div className="notificaciones-list">
             {notificacionesFiltradas.map(notif => {
-              // Determinar el tipo de notificación y sus estilos
               let tipoClase = 'error';
-              let iconoColor = 'error';
+              let IconoTipo = AlertTriangle;
               
               switch (notif.tipo) {
                 case 'minimo':
                 case 'critico':
                   tipoClase = 'critical';
-                  iconoColor = 'critical';
+                  IconoTipo = XCircle;
                   break;
                 case 'bajo':
-                  tipoClase = 'low';
-                  iconoColor = 'low';
+                  tipoClase = 'warning';
+                  IconoTipo = AlertTriangle;
                   break;
                 case 'success':
                   tipoClase = 'success';
-                  iconoColor = 'success';
+                  IconoTipo = CheckCircle;
                   break;
                 case 'error':
                 default:
                   tipoClase = 'error';
-                  iconoColor = 'error';
+                  IconoTipo = XCircle;
                   break;
               }
 
               return (
-                <div key={notif.id} className={`notification-item ${tipoClase}`}>
-                  <div className="notification-content">
-                    <AlertTriangle 
-                      size={16} 
-                      className={`notification-icon ${iconoColor}`} 
-                    />
-                    <div className="notification-text">
-                      <p className="notification-message">{notif.mensaje}</p>
-                      <p className="notification-time">
-                        {formatearFechaSafe(notif.created_at)}
-                      </p>
-                    </div>
+                <div 
+                  key={notif.id} 
+                  className={`notification-item ${tipoClase} ${notif.leida ? 'leida' : 'no-leida'}`}
+                >
+                  <div className="notification-icon-container">
+                    <IconoTipo size={20} className={`icon-${tipoClase}`} />
+                  </div>
+                  
+                  <div className="notification-body">
+                    <p className="notification-message">{notif.mensaje}</p>
+                    <p className="notification-time">
+                      {formatearFechaSafe(notif.created_at)}
+                    </p>
+                  </div>
+                  
+                  <div className="notification-actions">
+                    {!notif.leida && (
+                      <button
+                        onClick={() => handleMarcarComoLeida(notif.id)}
+                        className="btn-mark-read"
+                        title="Marcar como leída"
+                      >
+                        <Check size={16} />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleEliminarNotificacion(notif.id)}
+                      className="btn-delete-notif"
+                      title="Eliminar notificación"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </div>
                 </div>
               );
@@ -381,6 +484,38 @@ const Notificaciones = ({ productos, ventas, notificaciones, formatearPrecio, mo
           </div>
         )}
       </div>
+
+      {/* Modal de Confirmación */}
+      {mostrarConfirmacion && (
+        <div className="modal-overlay" onClick={cerrarConfirmacion}>
+          <div className="modal-content confirmacion" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header danger">
+              <AlertTriangle size={24} />
+              <h3>{getTituloConfirmacion()}</h3>
+            </div>
+            
+            <div className="modal-body">
+              <p>{getMensajeConfirmacion()}</p>
+              <p className="warning-text">Esta acción no se puede deshacer.</p>
+            </div>
+            
+            <div className="modal-actions">
+              <button
+                onClick={confirmarEliminacion}
+                className="btn-confirm danger"
+              >
+                Sí, Eliminar
+              </button>
+              <button
+                onClick={cerrarConfirmacion}
+                className="btn-cancel"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

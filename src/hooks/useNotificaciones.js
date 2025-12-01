@@ -89,6 +89,51 @@ export const useNotificaciones = () => {
     return notificaciones.filter(n => n.tipo === tipo);
   };
 
+  // Eliminar notificación específica
+const eliminarNotificacion = async (id) => {
+  try {
+    await notificacionesService.eliminarNotificacion(id);
+    
+    setNotificaciones(prev => prev.filter(n => n.id !== id));
+    
+    // Actualizar contador de no leídas si era no leída
+    const notifEliminada = notificaciones.find(n => n.id === id);
+    if (notifEliminada && !notifEliminada.leida) {
+      setNoLeidas(prev => Math.max(0, prev - 1));
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error eliminando notificación:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Eliminar todas las notificaciones
+const eliminarTodas = async () => {
+  try {
+    await notificacionesService.eliminarTodas();
+    setNotificaciones([]);
+    setNoLeidas(0);
+    return { success: true };
+  } catch (error) {
+    console.error('Error eliminando todas:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Eliminar solo las leídas
+const eliminarLeidas = async () => {
+  try {
+    await notificacionesService.eliminarLeidas();
+    setNotificaciones(prev => prev.filter(n => !n.leida));
+    return { success: true };
+  } catch (error) {
+    console.error('Error eliminando leídas:', error);
+    return { success: false, error: error.message };
+  }
+};
+
   // Cargar notificaciones al montar el componente
   useEffect(() => {
     cargarNotificaciones();
@@ -140,6 +185,9 @@ export const useNotificaciones = () => {
     crearNotificacion,
     marcarComoLeida,
     marcarTodasComoLeidas,
-    filtrarPorTipo
+    filtrarPorTipo,
+    eliminarNotificacion,
+    eliminarTodas,
+    eliminarLeidas             
   };
 };
