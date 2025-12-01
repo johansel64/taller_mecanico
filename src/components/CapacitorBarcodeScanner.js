@@ -62,35 +62,37 @@ const CapacitorBarcodeScanner = ({
       setIsScanning(true);
       setError('');
       
-      // Hacer transparente el fondo para que se vea la cámara
+      console.log('🔍 Iniciando scanner...'); // Debug
+      
+      // PRIMERO: Agregar clase al body
       document.body.classList.add('scanner-active');
       
-      // Iniciar el escáner
+      // SEGUNDO: Pequeño delay para que React renderice el overlay
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      console.log('📷 Iniciando BarcodeScanner.startScan()'); // Debug
+      
+      // TERCERO: Iniciar el escáner del plugin
       const result = await BarcodeScanner.startScan();
-
-      // IMPORTANTE: Esconder todos los elementos excepto el scanner
-      const appElement = document.querySelector('.app') || document.querySelector('.App');
-      if (appElement) {
-        appElement.style.display = 'none';
-      }
+      
+      console.log('✅ Resultado del scanner:', result); // Debug
       
       // Procesar resultado
       if (result && result.hasContent) {
-        console.log('Código escaneado:', result.content);
+        console.log('✅ Código escaneado:', result.content);
         await stopScanning();
         onScan(result.content);
         onClose();
       } else {
-        console.log('Escaneo cancelado o sin contenido');
+        console.log('❌ Escaneo cancelado o sin contenido');
         await stopScanning();
       }
     } catch (error) {
-      console.error('Error durante el escaneo:', error);
+      console.error('❌ Error durante el escaneo:', error);
       setError('Error durante el escaneo: ' + error.message);
       await stopScanning();
     }
   };
-
   const stopScanning = async () => {
     try {
       if (isScanning) {

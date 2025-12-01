@@ -1,40 +1,43 @@
-/* components/CapacitorBarcodeScanner.css */
+  /* components/CapacitorBarcodeScanner.css */
 
-/* Clase global para hacer transparente el fondo cuando se escanea */
+  /* CRÍTICO: Asegurar que el overlay SIEMPRE esté visible */
   body.scanner-active {
     background: transparent !important;
-    overflow: hidden;
   }
 
-  body.scanner-active .app,
   body.scanner-active .App {
-    display: none !important;
+    background: transparent !important;
   }
 
-  body.scanner-active > *:not(.scanner-overlay-native) {
-    display: none !important;
-  }
-  
-  /* Overlay para scanner nativo activo */
+  /* Overlay para scanner nativo activo - MÁXIMA PRIORIDAD */
   .scanner-overlay-native {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 99999 !important;
-    display: flex;
-    flex-direction: column;
-    background: transparent;
-    pointer-events: auto;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 2147483647 !important; /* Z-index máximo posible */
+    display: flex !important;
+    flex-direction: column !important;
+    background: transparent !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
-  
+
+  /* Asegurar que todos los hijos del overlay sean visibles */
+  .scanner-overlay-native * {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
   .scanner-header {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.8) !important;
     padding: 40px 20px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 2147483647 !important;
   }
   
   .scanner-title {
