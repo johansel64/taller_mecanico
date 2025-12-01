@@ -134,6 +134,7 @@ const CapacitorBarcodeScanner = ({
   if (isNative && isScanning && hasPermission) {
     return (
       <div className="scanner-overlay-native">
+        <div className="scanner-overlay-cut"></div>
         <div className="scanner-header">
           <h3 className="scanner-title">{title}</h3>
           <button 
@@ -145,6 +146,8 @@ const CapacitorBarcodeScanner = ({
         </div>
         
         <div className="scanner-target-area">
+          
+
           <div className="scanner-frame">
             <div className="scanner-corner scanner-corner-tl"></div>
             <div className="scanner-corner scanner-corner-tr"></div>
