@@ -381,7 +381,7 @@ const handleRealizarVentaConCantidad = async () => {
   }, [error, mostrarNotificacion]);
 
   return (
-    <div className="inventario-container">
+    <div className={`inventario-container ${mostrarScanner ? "oculto-por-scanner" : ""}`}>
       {/* Header */}
       <div className="section-header">
         <div className="header-title">
