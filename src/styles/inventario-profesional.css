@@ -910,6 +910,19 @@
   cursor: not-allowed;
 }
 
+.btn-imprimir {
+  color: #667eea;
+}
+
+.btn-imprimir:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.btn-imprimir:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
 /* ========================================
    MODO EDICIÓN
    ======================================== */

@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Edit, Save, X, Package, Scan, Barcode, ShoppingCart, Trash2, AlertTriangle } from 'lucide-react';
 import { config } from '../config/config';
+import EtiquetaCodigoBarras from './EtiquetaCodigoBarras';
+import { Printer } from 'lucide-react';
 import { useProductos } from '../hooks/useProductos';
 import { useDebounce } from '../hooks/useDebounce';
 import { validarProducto, sanitizarTexto, validarVenta } from '../utils/validaciones';
@@ -65,6 +67,10 @@ const Inventario = ({
     stockMinimo: '',
     codigo_barras: ''
   });
+
+  // Estados para modal de etiqueta
+  const [mostrarEtiqueta, setMostrarEtiqueta] = useState(false);
+  const [productoEtiqueta, setProductoEtiqueta] = useState(null);
 
   const busquedaDebounced = useDebounce(busqueda, 300);
 
@@ -287,14 +293,14 @@ const handleRealizarVentaConCantidad = async () => {
     try {
       const resultado = await buscarConDeteccion(termino);
       
-      if (resultado.tipo === 'codigo_barras' && resultado.encontrado) {
-        mostrarNotificacion(
-          `Producto encontrado: ${resultado.resultados[0].nombre}`, 
-          'success'
-        );
-      } else if (resultado.tipo === 'codigo_barras' && !resultado.encontrado) {
-        mostrarNotificacion(`No se encontró producto con código: ${termino}`, 'warning');
-      }
+      // if (resultado.tipo === 'codigo_barras' && resultado.encontrado) {
+      //   mostrarNotificacion(
+      //     `Producto encontrado: ${resultado.resultados[0].nombre}`, 
+      //     'success'
+      //   );
+      // } else if (resultado.tipo === 'codigo_barras' && !resultado.encontrado) {
+      //   mostrarNotificacion(`No se encontró producto con código: ${termino}`, 'warning');
+      // }
     } catch (error) {
       console.error('Error en búsqueda:', error);
     }
@@ -307,11 +313,22 @@ const handleRealizarVentaConCantidad = async () => {
       
       if (tipo === 'nuevo') {
         setNuevoProducto({ ...nuevoProducto, codigo_barras: codigo });
+        // Ofrecer imprimir etiqueta
+        setTimeout(() => {
+          if (window.confirm('¿Deseas imprimir una etiqueta con este código?')) {
+            setProductoEtiqueta({ 
+              nombre: nuevoProducto.nombre || 'Nuevo Producto',
+              codigo_barras: codigo,
+              precio: nuevoProducto.precio 
+            });
+            setMostrarEtiqueta(true);
+          }
+        }, 500);
       } else if (tipo === 'edicion') {
         setDatosEdicion({ ...datosEdicion, codigo_barras: codigo });
       }
       
-      mostrarNotificacion(`Código generado: ${codigo}`, 'success');
+      // mostrarNotificacion(`Código generado: ${codigo}`, 'success');
     } catch (error) {
       mostrarNotificacion('Error generando código de barras', 'error');
     } finally {
@@ -335,9 +352,9 @@ const handleRealizarVentaConCantidad = async () => {
       const resultado = await manejarProductoEscaneado(codigo);
       
       if (resultado.encontrado) {
-        mostrarNotificacion(resultado.mensaje, 'success');
+        // mostrarNotificacion(resultado.mensaje, 'success');
       } else {
-        mostrarNotificacion(resultado.mensaje, 'error');
+        // mostrarNotificacion(resultado.mensaje, 'error');
         await ejecutarBusqueda(codigo);
       }
     } else if (tipoEscaneo === 'agregar') {
@@ -372,6 +389,20 @@ const handleRealizarVentaConCantidad = async () => {
       default:
         return 'Escanear Código de Barras';
     }
+  };
+
+  const abrirEtiqueta = (producto) => {
+    if (!producto.codigo_barras) {
+      mostrarNotificacion('Este producto no tiene código de barras', 'warning');
+      return;
+    }
+    setProductoEtiqueta(producto);
+    setMostrarEtiqueta(true);
+  };
+
+  const cerrarEtiqueta = () => {
+    setMostrarEtiqueta(false);
+    setProductoEtiqueta(null);
   };
 
   useEffect(() => {
@@ -590,6 +621,20 @@ const handleRealizarVentaConCantidad = async () => {
                   >
                     <Barcode size={18} />
                   </button>
+                  {nuevoProducto.codigo_barras && (
+                  <button
+                    type="button"
+                    onClick={() => abrirEtiqueta({
+                      nombre: nuevoProducto.nombre || 'Nuevo Producto',
+                      codigo_barras: nuevoProducto.codigo_barras,
+                      precio: nuevoProducto.precio
+                    })}
+                    className="btn-icon"
+                    title="Imprimir etiqueta"
+                  >
+                    <Printer size={16} />
+                  </button>
+                )}
                 </div>
               </div>
             </div>
@@ -776,6 +821,20 @@ const handleRealizarVentaConCantidad = async () => {
                         >
                           <Barcode size={18} />
                         </button>
+                        {producto.codigo_barras && (
+                        <button
+                          type="button"
+                          onClick={() => abrirEtiqueta({
+                            nombre: producto.nombre || 'Edición de producto',
+                            codigo_barras: producto.codigo_barras,
+                            precio: producto.precio
+                          })}
+                          className="btn-icon"
+                          title="Imprimir etiqueta"
+                        >
+                          <Printer size={16} />
+                        </button>
+                      )}
                       </div>
                     </div>
                   </div>
@@ -1049,6 +1108,13 @@ const handleRealizarVentaConCantidad = async () => {
         onClose={cerrarScanner}
         onScan={manejarCodigoEscaneado}
         title={getTitulo()}
+      />
+      {/* Modal de Etiqueta de Código de Barras */}
+      <EtiquetaCodigoBarras
+        isOpen={mostrarEtiqueta}
+        onClose={cerrarEtiqueta}
+        producto={productoEtiqueta}
+        formatearPrecio={formatearPrecio}
       />
     </div>
   );

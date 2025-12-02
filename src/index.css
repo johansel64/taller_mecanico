@@ -1,3 +1,4 @@
+/* index.css - Con soporte para barcode scanner */
 
 body {
   margin: 0;
@@ -12,7 +13,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+/* ============================================
+   AGREGAR ESTO AL FINAL DE src/index.css
+   ESTILOS PARA BARCODE SCANNER
+   ============================================ */
 
-body.scanner-active, html.scanner-active {
+/* Cuando el scanner está activo, hacer transparente y ocultar app */
+html.scanner-active,
+body.scanner-active {
   background: transparent !important;
+  background-color: transparent !important;
+  overflow: hidden !important;
 }
+
+/* Ocultar el root de React cuando se escanea */
+body.scanner-active #root {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* El scanner se renderiza vía Portal directamente en body, 
+   así que siempre será visible */

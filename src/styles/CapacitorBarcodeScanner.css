@@ -1,70 +1,51 @@
 /* components/CapacitorBarcodeScanner.css */
- body.scanner-active {
+
+/* ============================================
+   ESTILOS PARA OCULTAR LA APP DURANTE ESCANEO
+   ============================================ */
+
+/* Cuando el scanner está activo */
+html.scanner-active,
+body.scanner-active {
   background: transparent !important;
+  background-color: transparent !important;
 }
-/*
-body.scanner-active .App {
-  background: transparent !important;
-} */
 
+/* Ocultar el contenido principal de la app */
+body.scanner-active #root {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
 
+/* Pero mantener visible el overlay del scanner (que está en el body via Portal) */
+body.scanner-active > .scanner-overlay-native,
+body.scanner-active > .scanner-modal-overlay {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* ============================================
+   OVERLAY PARA SCANNER NATIVO ACTIVO
+   ============================================ */
 .scanner-overlay-native {
-  /* position: fixed;
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  right: 0;
+  bottom: 0;
   z-index: 999999;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  background: transparent !important; 
-  pointer-events: auto; */
-  position: fixed;
-  inset: 0;
-  z-index: 999999 !important; /* 🔥 Muy alto */
   pointer-events: auto;
-}
-
-.scanner-target-area {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-}
-
-/* Recorte transparente centrado: ancho 250px, alto 200px */
-.scanner-overlay-cut {
-  position: absolute;
-  inset: 0;
-  backdrop-filter: blur(2px);
-  background: rgba(0, 0, 0, 0.55);
-  z-index: 1;
-}
-
-
-
-
-.scanner-mask {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  mask:
-    radial-gradient(
-      circle 1px at 50% 50%, 
-      transparent 0,
-      transparent 20%, 
-      black 21%
-    );
 }
 
 .scanner-header {
   background: rgba(0, 0, 0, 0.9);
-  padding: 40px 20px 20px;
+  padding: 50px 20px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
 }
 
 .scanner-title {
@@ -72,164 +53,228 @@ body.scanner-active .App {
   margin: 0;
   font-size: 18px;
   font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .scanner-close-btn {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
-  font-size: 24px;
-  padding: 8px 12px;
+  font-size: 28px;
+  padding: 8px 14px;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .scanner-close-btn:active {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.4);
 }
 
+/* ============================================
+   ÁREA DE ESCANEO
+   ============================================ */
 .scanner-target-area {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  /* Fondo semi-transparente oscuro */
+  background: rgba(0, 0, 0, 0.6);
 }
 
+/* Marco de escaneo */
 .scanner-frame {
-  width: 260px;
-  height: 260px;
-  border: 3px solid #00ffae;
-  border-radius: 15px;
+  width: 280px;
+  height: 180px;
   position: relative;
-  z-index: 3;
-  margin: auto;
+  border: 3px solid #00ff00;
+  border-radius: 12px;
+  /* El interior del marco es transparente para ver la cámara */
+  background: transparent;
+  box-shadow: 
+    0 0 0 9999px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(0, 255, 0, 0.4),
+    inset 0 0 30px rgba(0, 255, 0, 0.1);
+  z-index: 5;
 }
 
 .scanner-corner {
   position: absolute;
-  width: 25px;
-  height: 25px;
-  border: 4px solid #00ff00;
-  z-index: 6;
+  width: 30px;
+  height: 30px;
+  border: 5px solid #00ff00;
 }
 
 .scanner-corner-tl {
-  top: -4px;
-  left: -4px;
+  top: -5px;
+  left: -5px;
   border-right: none;
   border-bottom: none;
+  border-radius: 10px 0 0 0;
 }
 
 .scanner-corner-tr {
-  top: -4px;
-  right: -4px;
+  top: -5px;
+  right: -5px;
   border-left: none;
   border-bottom: none;
+  border-radius: 0 10px 0 0;
 }
 
 .scanner-corner-bl {
-  bottom: -4px;
-  left: -4px;
+  bottom: -5px;
+  left: -5px;
   border-right: none;
   border-top: none;
+  border-radius: 0 0 0 10px;
 }
 
 .scanner-corner-br {
-  bottom: -4px;
-  right: -4px;
+  bottom: -5px;
+  right: -5px;
   border-left: none;
   border-top: none;
+  border-radius: 0 0 10px 0;
 }
 
+/* Línea de escaneo animada */
+.scanner-line {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #00ff00, transparent);
+  box-shadow: 0 0 15px #00ff00;
+  animation: scanLine 2s ease-in-out infinite;
+}
+
+@keyframes scanLine {
+  0%, 100% {
+    top: 10px;
+  }
+  50% {
+    top: calc(100% - 13px);
+  }
+}
+
+/* Animación del marco */
+@keyframes pulse {
+  0%, 100% {
+    border-color: rgba(0, 255, 0, 0.9);
+    box-shadow: 
+      0 0 0 9999px rgba(0, 0, 0, 0.6),
+      0 0 20px rgba(0, 255, 0, 0.3);
+  }
+  50% {
+    border-color: rgba(0, 255, 0, 1);
+    box-shadow: 
+      0 0 0 9999px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(0, 255, 0, 0.6);
+  }
+}
+
+.scanner-frame {
+  animation: pulse 2s infinite;
+}
+
+/* ============================================
+   INSTRUCCIONES Y CONTROLES
+   ============================================ */
 .scanner-instructions {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.9);
   padding: 20px;
   text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
 }
 
 .scanner-instructions p {
   color: white;
-  margin: 5px 0;
+  margin: 8px 0;
   font-size: 16px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.scanner-instructions p:first-child {
+  font-weight: bold;
+  font-size: 17px;
 }
 
 .scanner-controls {
   background: rgba(0, 0, 0, 0.9);
   padding: 20px;
+  padding-bottom: 40px;
   text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
 }
 
 .scanner-cancel-btn {
-  background: #ff4444;
+  background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
   color: white;
   border: none;
-  padding: 14px 32px;
-  border-radius: 8px;
-  font-size: 16px;
+  padding: 16px 50px;
+  border-radius: 12px;
+  font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 68, 68, 0.4);
+  box-shadow: 0 4px 20px rgba(255, 68, 68, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .scanner-cancel-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.97);
 }
 
-/* Modal para web y estados especiales */
+/* ============================================
+   MODAL PARA WEB Y ESTADOS ESPECIALES
+   ============================================ */
 .scanner-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 999999;
   padding: 20px;
 }
 
 .scanner-modal {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   width: 100%;
   max-width: 400px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
 .scanner-modal-header {
-  background: #f8f9fa;
-  padding: 16px 20px;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  padding: 18px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #e9ecef;
 }
 
 .scanner-modal-title {
   margin: 0;
   font-size: 18px;
-  color: #333;
+  color: white;
   font-weight: 600;
 }
 
 .scanner-modal-close {
-  background: none;
+  background: rgba(255, 255, 255, 0.2);
   border: none;
-  font-size: 20px;
-  color: #666;
+  font-size: 22px;
+  color: white;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-
-.scanner-modal-close:hover {
-  background: #e9ecef;
+  padding: 6px 12px;
+  border-radius: 6px;
 }
 
 .scanner-modal-content {
@@ -237,6 +282,7 @@ body.scanner-active .App {
   text-align: center;
 }
 
+/* Estados */
 .scanner-error,
 .scanner-permission,
 .scanner-web-mode,
@@ -250,8 +296,8 @@ body.scanner-active .App {
 .scanner-permission-icon,
 .scanner-web-icon,
 .scanner-loading-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
+  font-size: 56px;
+  margin-bottom: 20px;
 }
 
 .scanner-error h4,
@@ -261,6 +307,7 @@ body.scanner-active .App {
   margin: 0 0 12px 0;
   font-size: 20px;
   color: #333;
+  font-weight: 600;
 }
 
 .scanner-error-message,
@@ -268,8 +315,9 @@ body.scanner-active .App {
 .scanner-web-mode p,
 .scanner-loading p {
   color: #666;
-  margin-bottom: 20px;
-  line-height: 1.5;
+  margin-bottom: 24px;
+  line-height: 1.6;
+  font-size: 15px;
 }
 
 .scanner-error-actions,
@@ -282,34 +330,39 @@ body.scanner-active .App {
 
 .scanner-retry-btn,
 .scanner-permission-btn {
-  background: #007bff;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
+  font-size: 15px;
 }
 
 .scanner-manual-btn,
 .scanner-manual-input-btn {
-  background: #6c757d;
+  background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  font-size: 15px;
 }
 
+/* Códigos de ejemplo */
 .scanner-examples {
   margin-top: 20px;
-  text-align: left;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
 }
 
 .scanner-examples h5 {
-  margin: 0 0 12px 0;
+  margin: 0 0 15px 0;
   font-size: 14px;
   color: #666;
   text-align: center;
@@ -318,25 +371,27 @@ body.scanner-active .App {
 .scanner-example-codes {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .scanner-example-btn {
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
-  padding: 10px;
-  border-radius: 6px;
+  background: white;
+  border: 2px solid #dee2e6;
+  padding: 12px;
+  border-radius: 8px;
   font-family: 'Courier New', monospace;
-  font-size: 14px;
+  font-size: 15px;
   color: #495057;
   cursor: pointer;
   text-align: center;
 }
 
-.scanner-example-btn:hover {
+.scanner-example-btn:active {
   background: #e9ecef;
+  border-color: #007bff;
 }
 
+/* Footer */
 .scanner-modal-footer {
   background: #f8f9fa;
   padding: 16px 20px;
@@ -348,17 +403,11 @@ body.scanner-active .App {
   background: #6c757d;
   color: white;
   border: none;
-  padding: 10px 24px;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-}
-
-.scanner-header,
-.scanner-instructions,
-.scanner-controls {
-  position: relative;
-  z-index: 3;
+  font-size: 15px;
 }
 
 /* Responsive */
@@ -369,32 +418,29 @@ body.scanner-active .App {
   }
   
   .scanner-frame {
-    width: 200px;
-    height: 150px;
+    width: 260px;
+    height: 160px;
   }
   
   .scanner-error-actions,
   .scanner-permission-actions {
     flex-direction: column;
+    width: 100%;
   }
   
-  .scanner-example-codes {
-    gap: 6px;
+  .scanner-retry-btn,
+  .scanner-permission-btn,
+  .scanner-manual-btn {
+    width: 100%;
   }
 }
 
-/* Animación del marco */
-@keyframes pulse {
-  0%, 100% {
-    border-color: rgba(0, 255, 0, 0.9);
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-  }
-  50% {
-    border-color: rgba(0, 255, 0, 1);
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.6);
-  }
+/* Loading animation */
+.scanner-loading-icon {
+  animation: bounce 1s ease-in-out infinite;
 }
 
-.scanner-frame {
-  animation: pulse 2s infinite;
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
